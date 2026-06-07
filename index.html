@@ -118,7 +118,7 @@
         /* MOVABLE INTERACTIVE WINDOWS */
         .arcade-panel-box {
             position: fixed;
-            width: 320px;
+            width: 340px;
             max-width: calc(100% - 40px);
             background: var(--panel-bg);
             border: 3px solid var(--border-color);
@@ -153,6 +153,55 @@
         .panel-ui-close {
             cursor: pointer; background: none; border: none;
             color: var(--bg-color); font-weight: bold; font-size: 16px;
+        }
+
+        /* RETRO MINI BROWSER UI BAR CONFIGS */
+        .browser-navigation-bar {
+            background: #14161d;
+            border-bottom: 2px solid var(--border-color);
+            padding: 6px 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .browser-action-btn {
+            background: #1a1d24;
+            border: 1px solid #00ff66;
+            color: #00ff66;
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .browser-action-btn:active {
+            background: #00ff66;
+            color: #14161d;
+        }
+        .browser-url-input {
+            flex-grow: 1;
+            background: #1a1d24;
+            border: 1px solid #00ff66;
+            color: #00ff66;
+            font-family: monospace;
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            user-select: none;
+        }
+        .browser-indicator-badge {
+            color: #ff0055;
+            font-size: 0.7rem;
+            font-weight: bold;
+            border: 1px solid #ff0055;
+            padding: 2px 4px;
+            border-radius: 3px;
+            text-transform: uppercase;
         }
 
         /* MOUSE POINTER RENDERING RULES */
@@ -269,7 +318,8 @@
     <div id="musicWidgetBtn" class="draggable-widget" title="Open Spotify Core Engine [Key: M]">🎵</div>
 
     <div id="arcadePanel" class="arcade-panel-box">
-        <div class="panel-ui-header" id="arcadeHeader">            <span>SNAKE_CORE.EXE v3.1</span>
+        <div class="panel-ui-header" id="arcadeHeader">
+            <span>SNAKE_CORE.EXE v3.1</span>
             <button class="panel-ui-close" onclick="toggleArcadePanel()">X</button>
         </div>
         <div class="arcade-box-body">
@@ -293,17 +343,28 @@
 
     <div id="musicPanel" class="arcade-panel-box">
         <div class="panel-ui-header" id="musicHeader">
-            <span>Spotify.com v1.3</span>
+            <span>GUEST_TAB.EXE - Spotify Section</span>
             <button class="panel-ui-close" onclick="toggleMusicPanel()">X</button>
         </div>
+        
+        <div class="browser-navigation-bar">
+            <button class="browser-action-btn" onclick="browserControlReload()" title="Reload Tab">🔄</button>
+            <button class="browser-action-btn" onclick="browserControlHome()" title="Go Home">🏠</button>
+            <div class="browser-url-input" id="browserAddressString">https://open.spotify.com/embed/track/4PTG3Z6ehGkBFm3qLwRcxZ?utm_source=generator3</div>
+            <div class="browser-indicator-badge">🔒 Guest</div>
+        </div>
+
         <div class="arcade-box-body" style="padding: 0; background: #000; line-height: 0;">
             <iframe 
+                id="guestSpotifyPlayer"
                 style="border: none;" 
-                src=  "https://open.spotify.com/playlist/7nMUentFkCzGn7RZBbvHLC?si=uol2W9LGQcmmUG0DMWSrYg&pi=lJw2SjGeR0qns&nd=1&utm_medium=organic&product=open&%24full_url=https%3A%2F%2Fopen.spotify.com%2Fplaylist%2F7nMUentFkCzGn7RZBbvHLC%3Fsi%3Duol2W9LGQcmmUG0DMWSrYg%26pi%3DlJw2SjGeR0qns&feature=organic&_branch_match_id=1592159404917108919&_branch_referrer=H4sIAAAAAAAAA8WOUUvDMBSFf0362M5UHBOKaEc7xvbgxhj6MtLsto29TbKbxDEf%2FO2mgr9BOA%2BH7%2BPA6b237jHLnDVetbdUWJui0kP2ZMmcg%2FSFsaATxu%2FbgHgKhEU%2FTVj%2BzHgVM%2Bn0by3NGJFFcUPlfKxzvT2A9tVQftV6vnt%2FaT5Xm5LllVMsXwaD%2FLjY1K9yHA%2F1bLk97umtY%2FzBThbXV77%2FqGE3u2j3%2B0AgNkIO%2F%2FciQn2O8C5pQfhAUBjqhFYy%2BSZogUjp7tSQuTqgouzJjPAD9TGN0WEBAAA%3D" 
+                src="" 
                 width="100%" 
                 height="380" 
                 allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-                loading="lazy">
+                loading="lazy"
+                sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+                referrerpolicy="no-referrer">
             </iframe>
         </div>
     </div>
@@ -427,7 +488,7 @@
             <p>🔗 <strong>Instagram:</strong> <a href="https://instagram.com/iq_yeasin_00" target="_blank">@iq_yeasin_00</a></p>
             <p>🔗 <strong>X / Twitter:</strong> <a href="https://x.com/YeasinA15718784" target="_blank">@YeasinA15718784</a></p>
             <p>🔗 <strong>Reddit:</strong> <a href="https://reddit.com/user/YSN_7" target="_blank">u/YSN_7</a></p>
-            <p>🔗 <strong>Spotify Playlist:</strong> <a href="https://open.spotify.com/playlist/147pM63rMbeEepm3YmREzD" target="_blank">Especial Trck 69</a></p>
+            <p>🔗 <strong>Spotify Playlist:</strong> <a href="https://open.spotify.com/embed/track/4PTG3Z6ehGkBFm3qLwRcxZ?utm_source=generator4" target="_blank">Especial Trck 69</a></p>
         </div>
 
         <h2>Get In Touch Direct 📱</h2>
@@ -487,11 +548,42 @@
             }
         }
 
+        // Configuration variables for Browser Routing Engine
+        const spotifyHomeUrl = "https://open.spotify.com/embed/track/4PTG3Z6ehGkBFm3qLwRcxZ?utm_source=generator5";
+
+        function generateFreshGuestTokenUrl() {
+            const cacheBusterToken = Math.floor(Math.random() * 1000000);
+            return spotifyHomeUrl + "?guestMode=true&cb=" + cacheBusterToken;
+        }
+
+        // Interactive Browser control operations
+        function browserControlReload() {
+            const playerFrame = document.getElementById("guestSpotifyPlayer");
+            const addressString = document.getElementById("browserAddressString");
+            playerFrame.src = generateFreshGuestTokenUrl();
+            addressString.innerText = spotifyHomeUrl;
+        }
+
+        function browserControlHome() {
+            browserControlReload();
+        }
+
+        // Main window view loop logic handles tab opening lifecycle triggers
         function toggleMusicPanel() {
             var panel = document.getElementById("musicPanel");
+            var playerFrame = document.getElementById("guestSpotifyPlayer");
+            var addressString = document.getElementById("browserAddressString");
+            
             panel.classList.toggle("show");
+            
             if(panel.classList.contains("show")) {
                 document.getElementById("arcadePanel").classList.remove("show");
+                // Sets active tab frame URL on load
+                playerFrame.src = generateFreshGuestTokenUrl();
+                addressString.innerText = spotifyHomeUrl;
+            } else {
+                // Instantly drops frame context loop tree data on modal drop close
+                playerFrame.src = "";
             }
         }
 
@@ -646,3 +738,4 @@
     </script>
 </body>
 </html>
+
