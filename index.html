@@ -298,7 +298,7 @@
             <button class="panel-ui-close" onclick="toggleMusicPanel()">X</button>
         </div>
         <div class="panel-ui-content">
-            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGo67v2s?utm_source=generator&theme=05" width="100%" height="380" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            <iframe style="border-radius:12px" src="https://open.spotify.com/playlist/7nMUentFkCzGn7RZBbvHLC?si=WHYjIL7dTVi1dOTH3jt3rg" width="100%" height="380" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
         </div>
     </div>
 
@@ -367,7 +367,7 @@
         <ul>
             <li>🎮 <strong>Gaming:</strong> Either playing them, watching gameplay streams, or figuring out how they work.</li>
             <li>🍿 <strong>Binge-Watching:</strong> Deep into a movie rabbit hole or finishing a web series in one sitting.</li>
-            <li>🗣 { <strong>Connecting:</strong> Talking to people, learning what makes them tick, and observing how our generation interacts online.</li>
+            <li>🗣️ { <strong>Connecting:</strong> Talking to people, learning what makes them tick, and observing how our generation interacts online.</li>
         </ul>
         
         <blockquote>
@@ -445,6 +445,7 @@
             <p>🔗 <strong>Instagram:</strong> <a href="https://instagram.com/iq_yeasin_00" target="_blank">@iq_yeasin_00</a></p>
             <p>🔗 <strong>X / Twitter:</strong> <a href="https://x.com/YeasinA15718784" target="_blank">@YeasinA15718784</a></p>
             <p>🔗 <strong>Reddit:</strong> <a href="https://reddit.com/user/YSN_7" target="_blank">u/YSN_7</a></p>
+            <p>🔗 <strong>Spotify Playlist:</strong> <a href="https://open.spotify.com/user/iq_yeasin_00" target="_blank">iq_yeasin_00</a></p>
         </div>
 
         <h2>Get In Touch Direct 📱</h2>
@@ -465,174 +466,177 @@
         <h2>Fund My Travels & Tech Projects 💸</h2>
         <div class="payment-card">
             <p style="font-weight: bold; margin-bottom: 15px;">Scan to tip via any UPI app (GPay, PhonePe, Paytm, Navi)</p>
+            
             <button class="qr-btn" onclick="toggleQrCode()">Toggle QR Code 💳</button>
+            
             <img id="paymentQr" src="1000076222.jpg" alt="UPI QR Payment Portal" class="qr-code">
         </div>
     </section>
-
-    <div id="customAlert" class="custom-modal">
-        <div class="modal-content">
-            <h3>Hi, I'm Yeasin 👋</h3>
-            <p>Nice 2 meet u & thanks 4 check out ✌️</p>
-            <button class="modal-btn" onclick="closeCustomAlert()">OK</button>
-        </div>
-    </div>
 
     <footer>
         <p style="text-align: center; font-weight: bold; margin: 0;">Thanks for stopping by! Let's connect and build something cool. ✌️</p>
     </footer>
 
     <script>
+        // Custom cursor tracking script
         const cursor = document.getElementById('gameCursor');
-        let isTouch = false;
-
         document.addEventListener('mousemove', (e) => {
-            if (!isTouch) { cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px'; }
+            if(cursor) {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+            }
         });
-        document.addEventListener('touchstart', () => { isTouch = true; }, { passive: true });
 
-        // UNIVERSAL DRAG LOGIC CAPABLE OF MOVING FLOATING BUTTONS OR LARGE WINDOW BOXES
-        function makeElementDraggable(elmnt, dragHandle) {
+        function toggleAboutPanel() {
+            var panel = document.getElementById("aboutPanel");
+            panel.classList.toggle("show");
+        }
+
+        function toggleQrCode() {
+            var qr = document.getElementById("paymentQr");
+            qr.classList.toggle("show");
+        }
+
+        function toggleMusicPanel() {
+            var panel = document.getElementById("musicPanel");
+            panel.classList.toggle("show");
+        }
+
+        function toggleArcadePanel() {
+            var panel = document.getElementById("arcadePanel");
+            panel.classList.toggle("show");
+        }
+
+        function toggleMatrixTheme() {
+            const body = document.documentElement;
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+            }
+        }
+
+        function waveBack() {
+            const wave = document.getElementById('waveEmoji');
+            wave.classList.add('waving-animation');
+            setTimeout(() => wave.classList.remove('waving-animation'), 1200);
+        }
+
+        // Draggable windows setup implementation
+        function makeElementDraggable(el, headerEl) {
             let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-            const handle = dragHandle || elmnt;
-
-            handle.onmousedown = dragMouseDown;
-            handle.addEventListener('touchstart', dragTouchStart, { passive: false });
+            headerEl.onmousedown = dragMouseDown;
+            headerEl.ontouchstart = dragMouseDown;
 
             function dragMouseDown(e) {
                 e = e || window.event;
-                if(e.target.classList.contains('panel-ui-close') || e.target.classList.contains('arcade-btn')) return;
-                elmnt.setAttribute('data-dragged', 'false');
-                pos3 = e.clientX; pos4 = e.clientY;
+                if(e.type !== 'touchstart') e.preventDefault();
+                pos3 = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+                pos4 = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
                 document.onmouseup = closeDragElement;
+                document.ontouchend = closeDragElement;
                 document.onmousemove = elementDrag;
+                document.ontouchmove = elementDrag;
             }
 
             function elementDrag(e) {
                 e = e || window.event;
-                elmnt.setAttribute('data-dragged', 'true');
-                pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY;
-                pos3 = e.clientX; pos4 = e.clientY;
-                elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-                elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-                elmnt.style.bottom = "auto"; elmnt.style.right = "auto";
+                let clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+                let clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+                pos1 = pos3 - clientX;
+                pos2 = pos4 - clientY;
+                pos3 = clientX;
+                pos4 = clientY;
+                el.style.top = (el.offsetTop - pos2) + "px";
+                el.style.left = (el.offsetLeft - pos1) + "px";
+                el.style.bottom = 'auto';
+                el.style.right = 'auto';
             }
 
-            function closeDragElement() { document.onmouseup = null; document.onmousemove = null; }
-
-            function dragTouchStart(e) {
-                if(e.target.classList.contains('panel-ui-close') || e.target.classList.contains('arcade-btn')) return;
-                elmnt.setAttribute('data-dragged', 'false');
-                pos3 = e.touches[0].clientX; pos4 = e.touches[0].clientY;
-                elmnt.addEventListener('touchend', closeTouchDragElement, { passive: true });
-                elmnt.addEventListener('touchmove', touchElementDrag, { passive: false });
+            function closeDragElement() {
+                document.onmouseup = null;
+                document.onmousemove = null;
+                document.ontouchend = null;
+                document.ontouchmove = null;
             }
-
-            function touchElementDrag(e) {
-                elmnt.setAttribute('data-dragged', 'true');
-                pos1 = pos3 - e.touches[0].clientX; pos2 = pos4 - e.touches[0].clientY;
-                pos3 = e.touches[0].clientX; pos4 = e.touches[0].clientY;
-                elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-                elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-                elmnt.style.bottom = "auto"; elmnt.style.right = "auto";
-                e.preventDefault();
-            }
-
-            function closeTouchDragElement() { elmnt.removeEventListener('touchmove', touchElementDrag); }
         }
 
-        // INITIALIZE ALL INTERACTIVE LAYERS FOR FREE MOVEMENTS
-        makeElementDraggable(document.getElementById("musicWidgetBtn"));
-        makeElementDraggable(document.getElementById("gameWidgetBtn"));
         makeElementDraggable(document.getElementById("musicPanel"), document.getElementById("musicHeader"));
         makeElementDraggable(document.getElementById("arcadePanel"), document.getElementById("arcadeHeader"));
+        makeElementDraggable(document.getElementById("musicWidgetBtn"), document.getElementById("musicWidgetBtn"));
+        makeElementDraggable(document.getElementById("gameWidgetBtn"), document.getElementById("gameWidgetBtn"));
 
-        // Click Logic Connectors
-        document.getElementById("musicWidgetBtn").addEventListener('click', () => {
-            if (document.getElementById("musicWidgetBtn").getAttribute('data-dragged') !== 'true') toggleMusicPanel();
+        // Click actions for draggable widgets
+        document.getElementById("musicWidgetBtn").addEventListener('click', (e) => {
+            if (Math.abs(pos1) < 2 && Math.abs(pos2) < 2) toggleMusicPanel();
         });
-        document.getElementById("gameWidgetBtn").addEventListener('click', () => {
-            if (document.getElementById("gameWidgetBtn").getAttribute('data-dragged') !== 'true') toggleArcadePanel();
+        document.getElementById("gameWidgetBtn").addEventListener('click', (e) => {
+            if (Math.abs(pos1) < 2 && Math.abs(pos2) < 2) toggleArcadePanel();
         });
 
-        // SYSTEM HOTKEYS SETUP
+        let pos1 = 0, pos2 = 0; // Tracking thresholds
+
+        // Keyboard hotkeys tracking logic setup
         document.addEventListener('keydown', (e) => {
-            const key = e.key.toLowerCase();
-            if (key === 't') toggleMatrixTheme();
-            if (key === 'm') toggleMusicPanel();
-            if (key === 'g') toggleArcadePanel();
-            if (key === 'a') toggleAboutPanel();
-
-            if (e.key === 'ArrowUp') { changeDirection('UP'); e.preventDefault(); }
-            if (e.key === 'ArrowDown') { changeDirection('DOWN'); e.preventDefault(); }
-            if (e.key === 'ArrowLeft') { changeDirection('LEFT'); e.preventDefault(); }
-            if (e.key === 'ArrowRight') { changeDirection('RIGHT'); e.preventDefault(); }
+            if (e.key.toLowerCase() === 't') toggleMatrixTheme();
+            if (e.key.toLowerCase() === 'm') toggleMusicPanel();
+            if (e.key.toLowerCase() === 'g') toggleArcadePanel();
+            if (e.key.toLowerCase() === 'a') toggleAboutPanel();
         });
 
-        // MULTI-THEMING CORE MODULE
-        function toggleMatrixTheme() {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            if (currentTheme === 'dark') document.documentElement.removeAttribute('data-theme');
-            else document.documentElement.setAttribute('data-theme', 'dark');
+        // Basic Retro Snake implementation properties
+        const canvas = document.getElementById("snakeCanvas");
+        const ctx = canvas.getContext("2d");
+        let score = 0, hScore = 0;
+        let snake = [{x: 140, y: 90}];
+        let dx = 10, dy = 0;
+        let foodX, foodY;
+
+        function mainLoop() {
+            if (hasGameEnded()) {
+                snake = [{x: 140, y: 90}];
+                dx = 10; dy = 0; score = 0;
+                document.getElementById("currentScore").innerText = score;
+                createFood();
+            }
+            setTimeout(function onTick() {
+                clearCanvas();
+                drawFood();
+                advanceSnake();
+                drawSnake();
+                mainLoop();
+            }, 120);
         }
 
-        // NOKIA RETRO SNAKE CORE SYSTEM ENGINE
-        const canvas = document.getElementById('snakeCanvas');
-        const ctx = canvas.getContext('2d');
-        const scale = 10;
-        const rows = canvas.height / scale; const columns = canvas.width / scale;
-        let snake = [{x: 5 * scale, y: 5 * scale}];
-        let food = {x: 12 * scale, y: 10 * scale};
-        let dX = scale; let dY = 0; let score = 0;
-        let hiScore = localStorage.getItem('ysnSnakeHi') || 0;
-        document.getElementById('highScore').innerText = hiScore;
-
-        let gameLoopInterval = setInterval(gameStep, 100);
-
-        function gameStep() {
-            const head = {x: snake[0].x + dX, y: snake[0].y + dY};
-            if (head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height || checkSelfCollision(head)) {
-                resetSnakeGame(); return;
-            }
+        function clearCanvas() { ctx.fillStyle = "#1a1d24"; ctx.fillRect(0, 0, canvas.width, canvas.height); }
+        function drawSnake() { snake.forEach(part => { ctx.fillStyle = '#00ff66'; ctx.fillRect(part.x, part.y, 10, 10); }); }
+        function advanceSnake() {
+            const head = {x: snake[0].x + dx, y: snake[0].y + dy};
             snake.unshift(head);
-            if (head.x === food.x && head.y === food.y) {
-                score += 10; document.getElementById('currentScore').innerText = score;
-                if(score > hiScore) { hiScore = score; localStorage.setItem('ysnSnakeHi', hiScore); document.getElementById('highScore').innerText = hiScore; }
-                generateFoodCoordinates();
+            if (snake[0].x === foodX && snake[0].y === foodY) {
+                score += 10;
+                document.getElementById("currentScore").innerText = score;
+                if(score > hScore) { hScore = score; document.getElementById("highScore").innerText = hScore; }
+                createFood();
             } else { snake.pop(); }
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#ff0055'; ctx.fillRect(food.x, food.y, scale, scale);
-            ctx.fillStyle = '#00ff66'; snake.forEach(seg => ctx.fillRect(seg.x, seg.y, scale, scale));
         }
 
         function changeDirection(dir) {
-            if (dir === 'UP' && dY === 0) { dX = 0; dY = -scale; }
-            if (dir === 'DOWN' && dY === 0) { dX = 0; dY = scale; }
-            if (dir === 'LEFT' && dX === 0) { dX = -scale; dY = 0; }
-            if (dir === 'RIGHT' && dX === 0) { dX = scale; dY = 0; }
+            if (dir === 'LEFT' && dx === 0) { dx = -10; dy = 0; }
+            if (dir === 'UP' && dy === 0) { dx = 0; dy = -10; }
+            if (dir === 'RIGHT' && dx === 0) { dx = 10; dy = 0; }
+            if (dir === 'DOWN' && dy === 0) { dx = 0; dy = 10; }
         }
 
-        function generateFoodCoordinates() {
-            food.x = Math.floor(Math.random() * columns) * scale;
-            food.y = Math.floor(Math.random() * rows) * scale;
+        function randomTen(min, max) { return Math.round((Math.random() * (max-min) + min) / 10) * 10; }
+        function createFood() { foodX = randomTen(0, canvas.width - 10); foodY = randomTen(0, canvas.height - 10); }
+        function drawFood() { ctx.fillStyle = '#ff0055'; ctx.fillRect(foodX, foodY, 10, 10); }
+        function hasGameEnded() {
+            for (let i = 4; i < snake.length; i++) { if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) return true; }
+            return snake[0].x < 0 || snake[0].x > canvas.width - 10 || snake[0].y < 0 || snake[0].y > canvas.height - 10;
         }
-
-        function checkSelfCollision(head) {
-            for(let i = 1; i < snake.length; i++) { if (head.x === snake[i].x && head.y === snake[i].y) return true; }
-            return false;
-        }
-
-        function resetSnakeGame() {
-            snake = [{x: 5 * scale, y: 5 * scale}]; dX = scale; dY = 0; score = 0;
-            document.getElementById('currentScore').innerText = score; generateFoodCoordinates();
-        }
-
-        function toggleAboutPanel() { document.getElementById("aboutPanel").classList.toggle("show"); }
-        function toggleQrCode() { document.getElementById("paymentQr").classList.toggle("show"); }
-        function toggleMusicPanel() { document.getElementById("arcadePanel").classList.remove("show"); document.getElementById("musicPanel").classList.toggle("show"); }
-        function toggleArcadePanel() { document.getElementById("musicPanel").classList.remove("show"); document.getElementById("arcadePanel").classList.toggle("show"); resetSnakeGame(); }
-        function waveBack() { document.getElementById("waveEmoji").classList.add("waving-animation"); setTimeout(() => { document.getElementById("customAlert").style.display = "block"; }, 200); setTimeout(() => { document.getElementById("waveEmoji").classList.remove("waving-animation"); }, 1300); }
-        function closeCustomAlert() { document.getElementById("customAlert").style.display = "none"; }
+        createFood();
+        mainLoop();
     </script>
 </body>
 </html>
