@@ -128,11 +128,10 @@
             display: none;
             overflow: hidden;
             font-family: 'Courier New', Courier, monospace;
-            touch-action: none;
         }
 
         /* Default position layers */
-        #arcadePanel { bottom: 100px; right: 25px; }
+        #arcadePanel { bottom: 100px; right: 25px; touch-action: none; }
         #musicPanel { bottom: 100px; right: 25px; }
 
         .arcade-panel-box.show {
@@ -163,6 +162,7 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            user-select: none;
         }
         .browser-action-btn {
             background: #1a1d24;
@@ -189,10 +189,7 @@
             font-size: 0.75rem;
             padding: 4px 8px;
             border-radius: 4px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            user-select: none;
+            outline: none;
         }
         .browser-indicator-badge {
             color: #ff0055;
@@ -202,6 +199,21 @@
             padding: 2px 4px;
             border-radius: 3px;
             text-transform: uppercase;
+        }
+
+        /* VIEWPORT ENGINE AND SCROLL TRACK CONFIG */
+        .browser-viewport-wrapper {
+            padding: 0;
+            background: #000;
+            line-height: 0;
+            height: 380px;
+            overflow-y: auto; /* Activates fully operational scroll mechanics */
+            -webkit-overflow-scrolling: touch;
+        }
+        #guestSpotifyPlayer {
+            border: none;
+            width: 100%;
+            height: 100%;
         }
 
         /* MOUSE POINTER RENDERING RULES */
@@ -350,17 +362,14 @@
         <div class="browser-navigation-bar">
             <button class="browser-action-btn" onclick="browserControlReload()" title="Reload Tab">🔄</button>
             <button class="browser-action-btn" onclick="browserControlHome()" title="Go Home">🏠</button>
-            <div class="browser-url-input" id="browserAddressString">https://open.spotify.com/embed/track/4PTG3Z6ehGkBFm3qLwRcxZ?utm_source=generator3</div>
+            <input type="text" class="browser-url-input" id="browserAddressString" value="" title="Search or type URL and press enter">
             <div class="browser-indicator-badge">🔒 Guest</div>
         </div>
 
-        <div class="arcade-box-body" style="padding: 0; background: #000; line-height: 0;">
+        <div class="browser-viewport-wrapper">
             <iframe 
                 id="guestSpotifyPlayer"
-                style="border: none;" 
                 src="" 
-                width="100%" 
-                height="380" 
                 allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
                 loading="lazy"
                 sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
@@ -488,7 +497,7 @@
             <p>🔗 <strong>Instagram:</strong> <a href="https://instagram.com/iq_yeasin_00" target="_blank">@iq_yeasin_00</a></p>
             <p>🔗 <strong>X / Twitter:</strong> <a href="https://x.com/YeasinA15718784" target="_blank">@YeasinA15718784</a></p>
             <p>🔗 <strong>Reddit:</strong> <a href="https://reddit.com/user/YSN_7" target="_blank">u/YSN_7</a></p>
-            <p>🔗 <strong>Spotify Playlist:</strong> <a href="https://open.spotify.com/embed/track/4PTG3Z6ehGkBFm3qLwRcxZ?utm_source=generator4" target="_blank">Especial Trck 69</a></p>
+            <p>🔗 <strong>Spotify Playlist:</strong> <a href="https://open.spotify.com/embed/track/4PTG3Z6ehGkBFm3qLwRcxZ?utm_source=generator7" target="_blank">Especial Trck 69</a></p>
         </div>
 
         <h2>Get In Touch Direct 📱</h2>
@@ -549,24 +558,48 @@
         }
 
         // Configuration variables for Browser Routing Engine
-        const spotifyHomeUrl = "https://open.spotify.com/embed/track/4PTG3Z6ehGkBFm3qLwRcxZ?utm_source=generator5";
+        const spotifyHomeUrl = "https://open.spotify.com/playlist/7nMUentFkCzGn7RZBbvHLC";
 
-        function generateFreshGuestTokenUrl() {
-            const cacheBusterToken = Math.floor(Math.random() * 1000000);
-            return spotifyHomeUrl + "?guestMode=true&cb=" + cacheBusterToken;
-        }
-
-        // Interactive Browser control operations
-        function browserControlReload() {
+        function processBrowserNavigationTarget(targetInput) {
             const playerFrame = document.getElementById("guestSpotifyPlayer");
             const addressString = document.getElementById("browserAddressString");
-            playerFrame.src = generateFreshGuestTokenUrl();
-            addressString.innerText = spotifyHomeUrl;
+            let cleanUrl = targetInput.trim();
+
+            if (!cleanUrl) return;
+
+            // Simple parser that turns raw terms into search queries, or matches explicit URLs
+            if (!cleanUrl.startsWith('http://') && !cleanUrl.startsWith('https://')) {
+                if (cleanUrl.includes('.') && !cleanUrl.includes(' ')) {
+                    cleanUrl = 'https://' + cleanUrl;
+                } else {
+                    cleanUrl = 'https://www.bing.com/search?q=' + encodeURIComponent(cleanUrl);
+                }
+            }
+
+            // Inject cache buster payload to maintain guest mode isolation
+            const cacheBusterToken = Math.floor(Math.random() * 1000000);
+            const separator = cleanUrl.includes('?') ? '&' : '?';
+            
+            playerFrame.src = cleanUrl + separator + "guestMode=true&cb=" + cacheBusterToken;
+            addressString.value = cleanUrl;
+        }
+
+        // Handle navigation actions
+        function browserControlReload() {
+            const addressString = document.getElementById("browserAddressString");
+            processBrowserNavigationTarget(addressString.value || spotifyHomeUrl);
         }
 
         function browserControlHome() {
-            browserControlReload();
+            processBrowserNavigationTarget(spotifyHomeUrl);
         }
+
+        // Listen for Search Address bar 'Enter' keystrokes 
+        document.getElementById("browserAddressString").addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                processBrowserNavigationTarget(this.value);
+            }
+        });
 
         // Main window view loop logic handles tab opening lifecycle triggers
         function toggleMusicPanel() {
@@ -578,11 +611,8 @@
             
             if(panel.classList.contains("show")) {
                 document.getElementById("arcadePanel").classList.remove("show");
-                // Sets active tab frame URL on load
-                playerFrame.src = generateFreshGuestTokenUrl();
-                addressString.innerText = spotifyHomeUrl;
+                processBrowserNavigationTarget(spotifyHomeUrl);
             } else {
-                // Instantly drops frame context loop tree data on modal drop close
                 playerFrame.src = "";
             }
         }
@@ -611,6 +641,9 @@
             headerEl.ontouchstart = dragMouseDown;
 
             function dragMouseDown(e) {
+                // Do not trigger drag tracking if user interacts inside control form field targets
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
+                
                 e = e || window.event;
                 if(e.type !== 'touchstart') e.preventDefault();
                 pos3 = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
@@ -676,6 +709,7 @@
 
         // Keyboard hotkeys tracking logic setup
         document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return; // Prevent hotkeys when typing in browser bar
             if (e.key.toLowerCase() === 't') toggleMatrixTheme();
             if (e.key.toLowerCase() === 'g') toggleArcadePanel();
             if (e.key.toLowerCase() === 'm') toggleMusicPanel();
@@ -738,4 +772,3 @@
     </script>
 </body>
 </html>
-
