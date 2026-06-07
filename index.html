@@ -206,8 +206,8 @@
             padding: 0;
             background: #000;
             line-height: 0;
-            height: 380px;
-            overflow-y: auto; /* Activates fully operational scroll mechanics */
+            height: 352px; /* Set to match native Spotify embed player structural heights */
+            overflow-y: auto;
             -webkit-overflow-scrolling: touch;
         }
         #guestSpotifyPlayer {
@@ -353,12 +353,13 @@
         </div>
     </div>
 
+    <!-- SPOTIFY PANEL SECTION -->
     <div id="musicPanel" class="arcade-panel-box">
         <div class="panel-ui-header" id="musicHeader">
             <span>GUEST_TAB.EXE - Spotify Section</span>
             <button class="panel-ui-close" onclick="toggleMusicPanel()">X</button>
         </div>
-        
+
         <div class="browser-navigation-bar">
             <button class="browser-action-btn" onclick="browserControlReload()" title="Reload Tab">🔄</button>
             <button class="browser-action-btn" onclick="browserControlHome()" title="Go Home">🏠</button>
@@ -466,7 +467,7 @@
                 <h3>1. The Field Days (The Beginning)</h3>
                 <img src="1000076199.jpg" alt="Little Yeasin in the fields">
             </div>
-            
+
             <div class="timeline-item">
                 <h3>2. The "Early Tech & Gaming" Era</h3>
                 <img src="1000076193.jpg" alt="Young Yeasin playing games on a phone">
@@ -497,7 +498,7 @@
             <p>🔗 <strong>Instagram:</strong> <a href="https://instagram.com/iq_yeasin_00" target="_blank">@iq_yeasin_00</a></p>
             <p>🔗 <strong>X / Twitter:</strong> <a href="https://x.com/YeasinA15718784" target="_blank">@YeasinA15718784</a></p>
             <p>🔗 <strong>Reddit:</strong> <a href="https://reddit.com/user/YSN_7" target="_blank">u/YSN_7</a></p>
-            <p>🔗 <strong>Spotify Playlist:</strong> <a href="https://open.spotify.com/embed/track/4PTG3Z6ehGkBFm3qLwRcxZ?utm_source=generator7" target="_blank">Especial Trck 69</a></p>
+            <p>🔗 <strong>Spotify Playlist:</strong> <a href="https://open.spotify.com/playlist/7nMUentFkCzGn7RZBbvHLC?utm_source=generator" target="_blank">Especial Trck 69</a></p>
         </div>
 
         <h2>Get In Touch Direct 📱</h2>
@@ -518,9 +519,9 @@
         <h2>Fund My Travels & Tech Projects 💸</h2>
         <div class="payment-card">
             <p style="font-weight: bold; margin-bottom: 15px;">Scan to tip via any UPI app (GPay, PhonePe, Paytm, Navi)</p>
-            
+
             <button class="qr-btn" onclick="toggleQrCode()">Toggle QR Code 💳</button>
-            
+
             <img id="paymentQr" src="1000076222.jpg" alt="UPI QR Payment Portal" class="qr-code">
         </div>
     </section>
@@ -557,8 +558,8 @@
             }
         }
 
-        // Configuration variables for Browser Routing Engine
-        const spotifyHomeUrl = "https://open.spotify.com/playlist/7nMUentFkCzGn7RZBbvHLC";
+        // CORRECT CONFIGURATION FOR EMISSION OF SPOTIFY APP PLATFORM
+        const spotifyHomeUrl = "https://open.spotify.com/embed/playlist/7nMUentFkCzGn7RZBbvHLC?utm_source=generator";
 
         function processBrowserNavigationTarget(targetInput) {
             const playerFrame = document.getElementById("guestSpotifyPlayer");
@@ -567,8 +568,10 @@
 
             if (!cleanUrl) return;
 
-            // Simple parser that turns raw terms into search queries, or matches explicit URLs
-            if (!cleanUrl.startsWith('http://') && !cleanUrl.startsWith('https://')) {
+            // Automatically intercepts standard URLs and morphs them into responsive iframe structures
+            if (cleanUrl.includes("spotify.com") && !cleanUrl.includes("/embed/")) {
+                cleanUrl = cleanUrl.replace("spotify.com/", "spotify.com/embed/");
+            } else if (!cleanUrl.startsWith('http://') && !cleanUrl.startsWith('https://')) {
                 if (cleanUrl.includes('.') && !cleanUrl.includes(' ')) {
                     cleanUrl = 'https://' + cleanUrl;
                 } else {
@@ -576,11 +579,7 @@
                 }
             }
 
-            // Inject cache buster payload to maintain guest mode isolation
-            const cacheBusterToken = Math.floor(Math.random() * 1000000);
-            const separator = cleanUrl.includes('?') ? '&' : '?';
-            
-            playerFrame.src = cleanUrl + separator + "guestMode=true&cb=" + cacheBusterToken;
+            playerFrame.src = cleanUrl;
             addressString.value = cleanUrl;
         }
 
@@ -606,9 +605,9 @@
             var panel = document.getElementById("musicPanel");
             var playerFrame = document.getElementById("guestSpotifyPlayer");
             var addressString = document.getElementById("browserAddressString");
-            
+
             panel.classList.toggle("show");
-            
+
             if(panel.classList.contains("show")) {
                 document.getElementById("arcadePanel").classList.remove("show");
                 processBrowserNavigationTarget(spotifyHomeUrl);
@@ -626,6 +625,7 @@
             }
         }
 
+        // Interactive configurations
         function waveBack() {
             const wave = document.getElementById('waveEmoji');
             wave.classList.add('waving-animation');
@@ -641,9 +641,8 @@
             headerEl.ontouchstart = dragMouseDown;
 
             function dragMouseDown(e) {
-                // Do not trigger drag tracking if user interacts inside control form field targets
                 if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
-                
+
                 e = e || window.event;
                 if(e.type !== 'touchstart') e.preventDefault();
                 pos3 = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
@@ -660,10 +659,10 @@
                 e = e || window.event;
                 let clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
                 let clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
-                
+
                 pos1 = pos3 - clientX;
                 pos2 = pos4 - clientY;
-                
+
                 if (Math.abs(pos1) > 1 || Math.abs(pos2) > 1) {
                     isDragging = true;
                 }
@@ -690,7 +689,7 @@
 
         const arcadeDragInstance = makeElementDraggable(document.getElementById("arcadePanel"), document.getElementById("arcadeHeader"));
         const musicPanelDragInstance = makeElementDraggable(document.getElementById("musicPanel"), document.getElementById("musicHeader"));
-        
+
         const gameBtnDragInstance = makeElementDraggable(document.getElementById("gameWidgetBtn"), document.getElementById("gameWidgetBtn"));
         const musicBtnDragInstance = makeElementDraggable(document.getElementById("musicWidgetBtn"), document.getElementById("musicWidgetBtn"));
 
@@ -709,7 +708,7 @@
 
         // Keyboard hotkeys tracking logic setup
         document.addEventListener('keydown', (e) => {
-            if (e.target.tagName === 'INPUT') return; // Prevent hotkeys when typing in browser bar
+            if (e.target.tagName === 'INPUT') return; 
             if (e.key.toLowerCase() === 't') toggleMatrixTheme();
             if (e.key.toLowerCase() === 'g') toggleArcadePanel();
             if (e.key.toLowerCase() === 'm') toggleMusicPanel();
